@@ -1,3 +1,12 @@
+val file = "s3a://slice-data-lake-prod/flink/omp/raw/compressed/order/2022/03/10/16/data-0-222271.gz"
+val df = spark.read.json(file)
+df.printSchema()
+df.select("orderUUID", "merchantName", "orderTotal").show(false)
+df.select(from_unixtime((df.col("orderTimestamp")/1000)).cast("timestamp").alias("order_date"), 
+          (df.col("orderTotal")/100).alias("order_total"), df.col("merchantName")).show(false)
+df.select(df.col("orderUUID"), from_unixtime((df.col("orderTimestamp")/1000)).cast("date").alias("order_date"), 
+          (df.col("orderTotal")/100).alias("order_total"), df.col("merchantName")).show(false)
+
 //val file = "s3a://slice-data-lake-prod/flink/omp/raw/compressed/order/2022/03/10/16/data-0-222271.gz"
 val file = "s3a://slice-data-lake-prod/flink/omp/raw/compressed/order/2022/03/10/16/*.gz"
 
